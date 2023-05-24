@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+{% if title %}
+{{ title }}
+{% else %}
+{{ category.title }}
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<h1>API</h1>
+<p>
+    Примеры представлений информации через API
+</p>
+<div>
+    <ul>
+        <li>
+            <a href="{% url 'api:articles_api' %}">API списка статей</a>
+        </li>
+        <li>
+            <a href="{% url 'api:article_api' pk=3%}">API одной статьи</a>
+        </li>
+        <li>
+            <a href="{% url 'api:products_api' %}">API товаров</a>
+        </li>
+    </ul>
+</div>
+{% endblock %}

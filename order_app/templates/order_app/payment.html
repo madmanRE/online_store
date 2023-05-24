@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Оформление заказа
+{%endblock%}
+
+{%block content%}
+<div class="Order-infoBlock">
+    <div class="Order-personal">
+        <div class="row">
+            <div class="row-block">
+                <div class="Order-info">
+                    <div class="Order-infoType">ФИО:</div>
+                    <div class="Order-infoContent">{{user.username}}</div>
+                </div>
+                <div class="Order-info">
+                    <div class="Order-infoType">Телефон:</div>
+                    <div class="Order-infoContent">{{user.phone}}</div>
+                </div>
+                <div class="Order-info">
+                    <div class="Order-infoType">E-mail:</div>
+                    <div class="Order-infoContent">{{user.email}}</div>
+                </div>
+            </div>
+            <div class="row-block">
+                <div class="Order-info Order-info_delivery">
+                    <div class="Order-infoType">Тип доставки:</div>
+                    <div class="Order-infoContent">Обычная доставка</div>
+                </div>
+                <div class="Order-info">
+                    <div class="Order-infoType">Город:</div>
+                    <div class="Order-infoContent">Город доставки</div>
+                </div>
+                <div class="Order-info">
+                    <div class="Order-infoType">Адрес:</div>
+                    <div class="Order-infoContent">Адрес заказа</div>
+                </div>
+                <div class="Order-info Order-info_pay">
+                    <div class="Order-infoType">Оплата:</div>
+                    <div class="Order-infoContent">Онлайн картой</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="Cart Cart_order">
+        {%for prod in basket.items.all%}
+        <div class="Cart-product">
+            <div class="Cart-block Cart-block_row">
+                <div class="Cart-block Cart-block_pict"><a class="Cart-pict" href="#"><img
+                        class="Cart-img" src="{{prod.product.product_picture.url}}"
+                        alt="{{prod.product.title}}"/></a>
+                </div>
+                <div class="Cart-block Cart-block_info"><a class="Cart-title"
+                                                           href="{%url 'product' product_slug=prod.product.slug%}">{{prod.product.title}}</a>
+                    <div class="Cart-desc">{{prod.product.description}}
+                    </div>
+                </div>
+                <div class="Cart-block Cart-block_price">
+                    <div class="Cart-price">{{prod.product.price}} руб.
+                    </div>
+                </div>
+            </div>
+            <div class="Cart-block Cart-block_row">
+                <div class="Cart-block Cart-block_amount">{{prod.product_quantity}} шт.
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+        <div class="Cart-total">
+            <div class="Cart-block Cart-block_total">
+                <strong class="Cart-title">Итого:</strong>
+                <span class="Cart-price">{{basket.total_cost}} руб.</span>
+            </div>
+            <div class="Cart-block">
+                <button class="btn btn_primary btn_lg" type="submit">Оплатить</button>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<div class="Middle Middle_top">
+    <div style="margin: 20px;">
+        <h3>
+            Формы на случай оплаты картой или с чужого счета
+        </h3>
+        {%if order.payment_type == 'online'%}
+        <div>
+            <form method="post" action="#">
+                {%csrf_token%}
+                {{card_form.as_p}}
+                <button type="button">Оплатить</button>
+            </form>
+        </div>
+        {%endif%}
+        {%if order.payment_type == 'someone'%}
+        <div>
+            <form method="post" action="#">
+                {%csrf_token%}
+                {{code_form.as_p}}
+                <button type="button">Оплатить</button>
+            </form>
+        </div>
+        {%endif%}
+    </div>
+</div>
+{%endblock%}

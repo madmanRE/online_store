@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+{{product.title}} купить в интернет магазине MEGANO
+{% endblock %}
+
+
+{% block content %}
+<div class="Middle Middle_top">
+    <div class="Section">
+        <div class="wrap">
+            <div class="Product">
+                <div class="ProductCard">
+                    <div class="ProductCard-look">
+                        <div class="ProductCard-photo">
+                            <img src="{{product.product_picture.url}}" alt="{{product.title}} big photo"/>
+                        </div>
+
+
+                        <div class="ProductCard-picts">
+                            <a class="ProductCard-pict ProductCard-pict_ACTIVE"
+                               href="{{product.product_picture.url}}">
+                                <img src="{{product.product_picture.url}}" alt="{{product.title}}"/></a>
+                            {%for image in gallery%}
+                            <a class="ProductCard-pict ProductCard-pict_ACTIVE"
+                               href="{{image.image.url}}">
+                                <img src="{{image.image.url}}" alt="{{image.product_ref.title}}"/></a>
+                            {%endfor%}
+                        </div>
+
+
+                    </div>
+                    <div class="ProductCard-desc">
+                        <div class="ProductCard-header">
+                            <h2 class="ProductCard-title">{{product.title}}
+                            </h2>
+                            <div class="ProductCard-info">
+                                <div class="ProductCard-cost">
+                                    <div class="ProductCard-price">{{product.price}}руб.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ProductCard-text">
+                            <ul>
+                                <li>{{product.description}}
+                                </li>
+                                <li>tempor incididunt ut labore et dolore magna aliqua. Lorem
+                                </li>
+                                <li>ipsum dolor sit ameabore et dolore magna aliqua. Lorem ipsum
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ProductCard-cart">
+
+
+                            <form method="POST" action="{% url 'add-to-cart' product_id=product.id %}">
+                                {% csrf_token %}
+                                <div class="ProductCard-cartElement ProductCard-cartElement_amount">
+                                    <div class="Amount Amount_product">
+                                        <button class="Amount-remove" type="button"></button>
+                                        <input class="Amount-input form-input" name="quantity" type="text" value="1"/>
+                                        <button class="Amount-add" type="button"></button>
+                                    </div>
+                                </div>
+                                {% if user %}
+                                <div class="ProductCard-cartElement">
+                                    <button class="btn btn_primary" type="submit">
+                                        <img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}"
+                                             alt="cart_white.svg"/>
+                                        <span class="btn-content">Купить</span>
+                                    </button>
+                                </div>
+                                {% else %}
+                                <div class="ProductCard-cartElement">
+                                    <a class="btn btn_primary" href="#modal_open_false">
+                                        <img class="btn-icon" src="{% static 'assets/img/icons/card/cart_white.svg' %}"
+                                             alt="cart_white.svg"/>
+                                        <span class="btn-content">Купить</span>
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </form>
+
+
+                            <div id="modal_open" class="my_modal">
+                                <div class="my_modal-dialog">
+                                    <div class="my_modal-content">
+                                        <div class="my_modal-header">
+                                            <p class="my_modal-title">Поздравляем!</p>
+                                            <a href="#" title="Закрыть модальное окно" class="close">×</a>
+                                        </div>
+                                        <div class="my_modal-body">
+                                            <p>Товар успешно добавлен в корзину!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="modal_open_false" class="my_modal">
+                                <div class="my_modal-dialog">
+                                    <div class="my_modal-content">
+                                        <div class="my_modal-header">
+                                            <p class="my_modal-title">Необходимо зарегистрироваться</p>
+                                            <a href="#" title="Закрыть модальное окно" class="close">×</a>
+                                        </div>
+                                        <div class="my_modal-body">
+                                            <p>Для добавления товара в корзину необходимо зарегистироваться или войти в
+                                                аккаунт!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ProductCard-footer">
+                            <div class="ProductCard-tags">
+                                <strong class="ProductCard-tagsTitle">Тэги:
+                                </strong>
+                                {%for tag in product.tags.all%}
+                                <a href="{% url 'tag_page' tag_id=tag.id %}">{{tag.tags_name}}</a>
+                                {%endfor%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="Tabs Tabs_default">
+                    <div class="Tabs-links"><a class="Tabs-link_ACTIVE Tabs-link"
+                                               href="#description"><span>Описание</span></a><a class="Tabs-link"
+                                                                                               href="#addit"><span>Характеристика</span></a><a
+                            class="Tabs-link" href="#reviews"><span>Отзывы ({{reviews_count}})</span></a>
+                    </div>
+                    <div class="Tabs-wrap">
+                        <div class="Tabs-block" id="description">
+
+                            <!--Детальное описание товара, в данный момент - детальное описание или рыботекст -->
+                            <h2>{{product.title}} - о товаре
+                            </h2>
+                            {% if product.big_text %}
+                            {{product.big_text}}
+                            <img class="pict pict_right" src="{{product.product_picture.url}}" alt="{{product.title}}"/>
+                            {% else %}
+                            <p>Lorem ipsum dolor sit amet, consectetuer&#32;
+                                <strong>adipiscing
+                                </strong>&#32;elit doli. Aenean commodo ligula eget dolor. Aenean massa.&#32;<a
+                                        href="#">Cumtipsu</a>&#32;sociis natoque penatibus et magnis dis parturient
+                                montesti, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eutu,
+                                pretiumem.
+                            </p>
+                            <img class="pict pict_right" src="{{product.product_picture.url}}" alt="{{product.title}}"/>
+                            {%endif%}
+
+                            <!--Тут не понятно, что должно быть-->
+                            <ul>
+                                <li>Lorem ipsum dolor sit amet, consectetuer
+                                </li>
+                                <li>adipiscing elit doli.&#32;<em>Aenean</em>&#32;commodo ligula
+                                </li>
+                                <li>eget dolor. Aenean massa. Cumtipsu sociis
+                                </li>
+                                <li>natoque penatibus et magnis dis parturient
+                                </li>
+                                <li>montesti, nascetur ridiculus mus. Donec
+                                </li>
+                                <li>quam felis, ultricies nec, pellentesque eutu
+                                </li>
+                            </ul>
+                            <!--Тут не понятно, что должно быть-->
+                            <!--Детальное описание товара, в данный момент - рыботекст -->
+
+
+                            <div class="clearfix">
+                            </div>
+                            <div class="table">
+                                <table>
+                                    <tr>
+                                        <th>Характеристика
+                                        </th>
+                                        <th>Значение
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>Тип устройства
+                                        </td>
+                                        <td>{{product.tags.first}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="Tabs-block" id="sellers">
+                            <div class="Categories Categories_product">
+                            </div>
+                        </div>
+
+
+                        <div class="Tabs-block" id="addit">
+                            <div class="Product-props">
+                                {% for spec in specifications %}
+                                <div class="Product-prop">
+                                    <strong>{{spec.name}}
+                                    </strong><span> {{spec.value}}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+
+                        <!--Отзывы
+                        ================================================
+                        -->
+                        <div class="Tabs-block" id="reviews">
+                            <header class="Section-header">
+                                <h3 class="Section-title">Всего отзывов: {{reviews_count}}
+                                </h3>
+                            </header>
+                            <div class="Comments">
+
+                                {%for review in reviews%}
+                                <div class="Comment">
+                                    <div class="Comment-column Comment-column_pict">
+                                        <div class="Comment-avatar">
+                                            {% if review.author.avatar %}
+                                            <img src="{{review.author.avatar.url}}"
+                                                 style="border-radius:100px; width:100px; height:100px; margin-top:-2px">
+                                            {%endif%}
+                                        </div>
+                                    </div>
+                                    <div class="Comment-column">
+                                        <header class="Comment-header">
+                                            <div>
+                                                <strong class="Comment-title">
+                                                    {%if review.author%}
+                                                    {{review.author}}
+                                                    {%else%}
+                                                    Неизвестный пользователь
+                                                    {%endif%}
+                                                </strong><span class="Comment-date">{{review.create_at}}</span>
+                                            </div>
+                                        </header>
+                                        <div class="Comment-content">{{review.text}}
+                                        </div>
+                                    </div>
+                                </div>
+                                {%endfor%}
+                            </div>
+
+
+                            <header class="Section-header Section-header_product">
+                                <h3 class="Section-title">Добавить отзыв
+                                </h3>
+                            </header>
+
+                            <div class="Tabs-addComment">
+                                <form class="form" method="post">
+                                    {% csrf_token %}
+                                    {{ form.text }}
+                                    {{ form.text.errors }}
+                                    <div class="form-group">
+                                        <button class="btn btn_muted" type="submit">Отправить отзыв</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                        <!--Отзывы
+                        ================================================
+                        -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

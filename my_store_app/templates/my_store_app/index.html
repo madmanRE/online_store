@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+
+{% block content %}
+
+<!-- Слайдер начало -->
+<div class="Header-slider">
+    <div class="Slider Slider_main">
+        <div class="Slider-box">
+            <!-- тестовый элемент -->
+            {% for prod in slider_product %}
+            <div class="Slider-item">
+                <div class="Slider-content">
+                    <div class="row">
+                        <div class="row-block">
+                            <strong class="Slider-title">{{ prod.title }}<span
+                                    class="text_primary">&nbsp;{{prod.count}}</span><br>{{ prod.tags.first.tags_name }}
+                            </strong>
+                            <div class="Slider-text">
+                                {{prod.description}}
+                            </div>
+                            <div class="Slider-footer"><a class="btn btn_primary"
+                                                          href="{% url 'product' product_slug=prod.slug %}">Get
+                                Started</a>
+                            </div>
+                        </div>
+                        <div class="row-block">
+                            <div class="Slider-img"><img src="{{prod.product_picture.url}}"
+                                                         alt="{{prod.title}}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- тестовый элемент -->
+
+        </div>
+        <div class="Slider-navigateWrap">
+            <div class="Slider-navigate">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Слайдер конец -->
+
+
+<div class="Middle">
+    <div class="Section">
+        <div class="wrap">
+            <!-- Банеры начало -->
+            <div class="BannersHome">
+                {% for ban in banners %}
+
+                <a class="BannersHomeBlock" href="{% url 'category' category_slug=ban.slug %}">
+                    <div class="BannersHomeBlock-row">
+                        <div class="BannersHomeBlock-block">
+                            <strong class="BannersHomeBlock-title">{{ban.title}}
+                            </strong>
+                            <div class="BannersHomeBlock-content">от&#32;<span class="BannersHomeBlock-price">{{ban.min_price}} руб.</span>
+                            </div>
+                        </div>
+                        <div class="BannersHomeBlock-block">
+                            <div class="BannersHomeBlock-img"><img src="{{ban.product_set.first.product_picture.url}}"
+                                                                   alt="{{ban.title}}"/>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                {%endfor%}
+            </div>
+            <!-- Банеры конец -->
+        </div>
+    </div>
+    <div class="Section Section_column Section_columnLeft Section_columnDesktop">
+        <div class="wrap">
+            <div class="Section-column">
+                <div class="Section-columnSection Section-columnSection_mark">
+                    <!-- Ограниченные предложения -->
+                    <header class="Section-columnHeader">
+                        <strong class="Section-columnTitle">ОГРАНИЧЕННЫЕ ПРЕДЛОЖЕНИЯ
+                        </strong>
+                    </header>
+                    {% if limited_offer %}
+                    <div class="Card"><a class="Card-picture"
+                                         href="{% url 'product' product_slug=limited_offer.product.slug %}"><img
+                            src="{{limited_offer.product.product_picture.url}}" alt="{{limited_offer.product.title}}"/></a>
+                        <div class="Card-content">
+                            <strong class="Card-title"><a href="{% url 'product' limited_offer.product.slug %}">{{limited_offer.product.title}}</a>
+                            </strong>
+                            <div class="Card-description">
+                                <div class="Card-cost"><span
+                                        class="Card-priceOld">{{limited_offer.product.price}} руб.</span><span
+                                        class="Card-price">{{limited_offer.new_price}} руб.</span>
+                                </div>
+                                <div class="Card-category">{{limited_offer.product.category}}<br><span
+                                        style="color: red">
+                                    Осталось...
+                                </span>
+                                </div>
+                            </div>
+                            <div class="CountDown" data-date="{{now}}">
+                                <div class="CountDown-block">
+                                    <div class="CountDown-wrap">
+                                        <div class="CountDown-days">
+                                        </div>
+                                        <span class="CountDown-label">Дней</span>
+                                    </div>
+                                </div>
+                                <div class="CountDown-block">
+                                    <div class="CountDown-wrap">
+                                        <div class="CountDown-hours">
+                                        </div>
+                                        <span class="CountDown-label">Часов</span>
+                                    </div>
+                                </div>
+                                <div class="CountDown-block">
+                                    <div class="CountDown-wrap">
+                                        <div class="CountDown-minutes">
+                                        </div>
+                                        <span class="CountDown-label">Минут</span>
+                                    </div>
+                                </div>
+                                <div class="CountDown-block">
+                                    <div class="CountDown-wrap">
+                                        <div class="CountDown-secs">
+                                        </div>
+                                        <span class="CountDown-label">Секунд</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {%else%}
+                    <div class="Card"><img
+                            src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fcleanshop.ru%2Fcatalog%2Fsphd%2F5032475.html&psig=AOvVaw3uZygr1Tb1BtYkYzFLOVgz&ust=1682460233048000&source=images&cd=vfe&ved=0CA4QjRxqFwoTCJCpy4DDw_4CFQAAAAAdAAAAABAD"
+                    />
+                        <div class="Card-content">
+                            <strong class="Card-title">Временно акций нет!
+                            </strong>
+                        </div>
+                    </div>
+                    {%endif%}
+
+                    <!-- Ограниченные предложения -->
+                </div>
+            </div>
+            <div class="Section-content">
+                <header class="Section-header">
+                    <h2 class="Section-title">Популярные товары
+                    </h2>
+                </header>
+                <div class="Cards">
+                    {% for prod in popular_product %}
+                    <div class="Card"><a class="Card-picture" href="{% url 'product' product_slug=prod.slug %}"><img
+                            src="{{prod.product_picture.url}}" alt="{{prod.title}}"/></a>
+                        <div class="Card-content">
+                            <strong class="Card-title"><a href="{% url 'product' product_slug=prod.slug %}">{{prod.title}}</a>
+                            </strong>
+                            <div class="Card-description">
+                                <div class="Card-cost"><span class="Card-price">{{prod.price}} руб.</span>
+                                </div>
+                                <div class="Card-category">{{prod.category}}
+                                </div>
+                                {%if user%}
+                                <div class="Card-hover"><a class="Card-btn"
+                                                           href="{% url 'add-to-cart' product_id=prod.id %}"><img
+                                        src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
+                                </div>
+                                {%else%}
+                                <div class="Card-hover"><a class="Card-btn" href="#"><img
+                                        src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
+                                </div>
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                    {%endfor%}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="Section Section_column Section_columnRight">
+        <div class="wrap">
+            <div class="Section-content">
+                <div class="Slider Slider_carousel">
+                    <header class="Section-header Section-header_close">
+                        <h2 class="Section-title">Ограниченный тираж
+                        </h2>
+                        <div class="Section-control">
+                            <div class="Slider-navigate">
+                            </div>
+                        </div>
+                    </header>
+                    <div class="Slider-box Cards">
+                        {% for card in limited_edition %}
+                        <div class="Slider-item">
+                            <div class="Slider-content">
+                                <div class="Card"><a class="Card-picture"
+                                                     href="{% url 'product' product_slug=card.slug %}"><img
+                                        src="{{card.product_picture.url}}" alt="{{card.title}}"/></a>
+                                    <div class="Card-content">
+                                        <strong class="Card-title"><a href="{% url 'product' product_slug=card.slug %}">{{card.title}}</a>
+                                        </strong>
+                                        <div class="Card-description">
+                                            <div class="Card-cost"><span class="Card-price">{{card.price}} руб.</span>
+                                            </div>
+                                            <div class="Card-category">{{card.category}}
+                                            </div>
+                                            {%if user%}
+                                            <div class="Card-hover"><a class="Card-btn"
+                                                                       href="{% url 'add-to-cart' product_id=card.id %}"><img
+                                                    src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
+                                            </div>
+                                            {%else%}
+                                            <div class="Card-hover"><a class="Card-btn" href="#"><img
+                                                    src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/></a>
+                                            </div>
+                                            {%endif%}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Профиль пользователя
+{% endblock %}
+{% block content %}
+<div class="Middle Middle_top">
+    <div class="Section Section_column Section_columnLeft">
+        <div class="wrap">
+            <div class="Section-column">
+                <div class="Section-columnSection">
+                    <header class="Section-header">
+                        <strong class="Section-title">Навигация
+                        </strong>
+                    </header>
+                    <div class="Section-columnContent">
+                        <div class="NavigateProfile">
+                            <ul class="menu menu_vt">
+                                <li class="menu-item_ACTIVE menu-item"><a class="menu-link"
+                                                                          href="{% url 'account' profile_id=user.id %}">Личный
+                                    кабинет</a>
+                                </li>
+                                <li class="menu-item"><a class="menu-link"
+                                                         href="{% url 'order_history' profile_id=user.id%}">История
+                                    заказов</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="Section-content">
+                <div class="Account">
+                    <div class="Account-group">
+                        <div class="Account-column">
+                            <div class="Account-avatar">
+                                {% if user.avatar %}
+                                <img src="{{ user.avatar.url }}" alt="{{user.username}}"
+                                     style="width:120px; height: 120px">
+                                {% else %}
+                                <img src="{% static 'assets/img/ava-default.png' %}" alt="Default Avatar">
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="Account-column">
+                            <div class="Account-name">{{user.full_name}}
+                            </div>
+                            <br>
+                            {% if user.phone %}
+                            <div>
+                                Телефон: {{user.phone}}
+                            </div>
+                            {%endif%}
+                            {%if user.email%}
+                            <div>
+                                Почта: {{user.email}}
+                            </div>
+                            {%endif%}
+                            {% if request.user.is_staff %}
+                            <p>Статус доступа: <span style="color:green; font-size:19px" title="Можно заходить в админпанель под своим логином и паролем">
+                                расширенный</span></p>
+                            {% endif %}
+                            <a class="Account-editLink" href="{% url 'update_profile' profile_pk=user.id %}">Редактировать
+                                профиль</a>
+                        </div>
+                    </div>
+                    <div class="Account-group">
+                        <div class="Account-column Account-column_full">
+                            {% for hist in last_orders %}
+                            <div class="Order Order_anons">
+
+                                <div class="Order-personal">
+                                    <div class="row">
+
+                                        <div class="row-block"><a class="Order-title"
+                                                                  href="{% url 'order_view' hist_id=hist.id %}">Заказ&#32;<span
+                                                class="Order-numberOrder">№{{hist.pk}}</span>&#32;от&#32;<span
+                                                class="Order-dateOrder">{{hist.payment_date}}</span></a>
+                                            <div class="Account-editLink"><a
+                                                    href="{% url 'order_history' profile_id=user.id%}">История
+                                                заказов</a>
+                                            </div>
+                                        </div>
+                                        <div class="row-block">
+                                            <div class="Order-info Order-info_delivery">
+                                                <div class="Order-infoType">Тип доставки:
+                                                </div>
+                                                <div class="Order-infoContent">
+                                                    {% if hist.delivery_type == 'ordinary' %}
+                                                    Обычная доставка
+                                                    {% elif hist.delivery_type == 'express' %}
+                                                    Экспресс доставка
+                                                    {% else %}
+                                                    Неизвестный тип доставки
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="Order-info Order-info_pay">
+                                                <div class="Order-infoType">Оплата:
+                                                </div>
+                                                <div class="Order-infoContent">
+                                                    {% if hist.payment_type == 'online' %}
+                                                    Оплата онлайн картой
+                                                    {% elif hist.payment_type == 'someone' %}
+                                                    За чужой счет
+                                                    {%else%}
+                                                    Неизвестный тип оплаты
+                                                    {%endif%}
+                                                </div>
+                                            </div>
+                                            <div class="Order-info">
+                                                <div class="Order-infoType">Общая стоимость:
+                                                </div>
+                                                <div class="Order-infoContent">{{hist.total_cost}} руб.
+                                                </div>
+                                            </div>
+                                            <div class="Order-info Order-info_status">
+                                                <div class="Order-infoType">Статус:
+                                                </div>
+                                                <div class="Order-infoContent">{{hist.status}}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            {%endfor%}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

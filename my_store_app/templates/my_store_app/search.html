@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Поиск по сайту
+{% endblock %}
+
+
+{% block content %}
+<h1>Результаты поиска</h1>
+{% if invalid %}
+<h2 style="color:red;">{{invalid}}</h2>
+{%else%}
+{% if products %}
+<ul>
+    {% for item in products %}
+    <li>
+        <div class="Cart-product">
+            <div class="Cart-block Cart-block_row">
+                <div class="Cart-block Cart-block_pict"><a class="Cart-pict"
+                                                           href="{% url 'product' product_slug=item.slug %}"><img
+                        class="Cart-img" src="{{item.product_picture.url}}" alt="card.jpg"/></a>
+                </div>
+                <div class="Cart-block Cart-block_info"><a class="Cart-title"
+                                                           href="{% url 'product' product_slug=item.slug %}">{{item.title}}</a>
+                    <div class="Cart-desc">{{item.description}}
+                    </div>
+
+                    <div class="Section-columnContent">
+                        {% for tag in item.tags.all %}
+                        <a class="btn btn_default btn_sm" href="{% url 'tag_page' tag_id=tag.id %}">{{ tag.tags_name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+                <div class="Cart-block Cart-block_price">
+                    <div class="Cart-price">{{item.price}} руб.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+
+    {% for art in articles %}
+    <li>
+        <div class="Cart-product">
+            <div class="Cart-block Cart-block_row">
+                <div class="Cart-block Cart-block_pict"><a class="Cart-pict"
+                                                           href="{% url 'blog_app:article' slug=art.slug %}"><img
+                        class="Cart-img" src="{{art.image.url}}" alt="card.jpg"/></a>
+                </div>
+                <div class="Cart-block Cart-block_info"><a class="Cart-title"
+                                                           href="{% url 'blog_app:article' slug=art.slug %}">{{art.title}}</a>
+                    <div class="Cart-desc">{{ art.text|slice:":50" }}...
+                    </div>
+                    <div>
+                        <p>Тема: {{ art.theme.title }}</p>
+                    </div>
+                    <div>
+                        <p>Автор: {{art.author.username}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+
+</ul>
+{% else %}
+<h2 style="color:red;">Ничего не найдено</h2>
+{% endif %}
+{%endif%}
+{% endblock %}

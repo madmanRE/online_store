@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+Корзина
+{% endblock %}
+{% block content %}
+<div class="Middle Middle_top">
+    <div class="Section">
+        <div class="wrap">
+            <form class="form Cart" action="#" method="post">
+
+                {% for item in items %}
+                <div class="Cart-product">
+                    <div class="Cart-block Cart-block_row">
+                        <div class="Cart-block Cart-block_pict"><a class="Cart-pict"
+                                                                   href="{% url 'product' product_slug=item.product.slug %}"><img
+                                class="Cart-img" src="{{item.product.product_picture.url}}" alt="card.jpg"/></a>
+                        </div>
+                        <div class="Cart-block Cart-block_info"><a class="Cart-title"
+                                                                   href="{% url 'product' product_slug=item.product.slug %}">{{item.product.title}}</a>
+                            <div class="Cart-desc">{{item.product.description}}
+                            </div>
+                        </div>
+                        <div class="Cart-block Cart-block_price">
+                            <div class="Cart-price">{{item.product.price}} руб.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="Cart-block Cart-block_row">
+                        <div class="Cart-block Cart-block_seller">
+                            <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->
+
+                        </div>
+                        <div class="Cart-block Cart-block_amount">
+                            <div class="Cart-amount">
+                                <div class="Amount">
+                                    <button class="Amount-remove" type="button">
+                                    </button>
+                                    <input class="Amount-input form-input" name="amount" type="text" value="{{ item.product_quantity }}"/>
+                                    <button class="Amount-add" type="button">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="Cart-block Cart-block_delete">
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                                <button class="Cart-delete" type="submit"><img
+                                        src="{% static 'assets/img/icons/card/delete.svg' %}" alt="delete.svg"/>
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+                {%endfor%}
+
+                <div class="Cart-total">
+                    <div class="Cart-block Cart-block_total">
+                        <strong class="Cart-title">Итого:
+                        </strong><span class="Cart-price">{{total_price}} руб.</span>
+                    </div>
+                    <div class="Cart-block"><a class="btn btn_success btn_lg" href="{%url 'ordering'%}">Оформить заказ</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

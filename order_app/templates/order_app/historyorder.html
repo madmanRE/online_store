@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+История заказов
+{%endblock%}
+{%block content%}
+
+<div class="Section-content">
+    <div class="Orders">
+        {%for hist in history%}
+        <div class="Order Order_anons">
+            <div class="Order-personal">
+                <div class="row">
+                    <div class="row-block"><a class="Order-title" href="{% url 'order_view' hist_id=hist.pk %}">Заказ&#32;<span
+                            class="Order-numberOrder">№{{hist.pk}}</span>&#32;от&#32;<span
+                            class="Order-dateOrder">{{hist.payment_date}}</span></a>
+                    </div>
+                    <div class="row-block">
+                        <div class="Order-info Order-info_delivery">
+                            <div class="Order-infoType">Тип доставки:
+                            </div>
+                            <div class="Order-infoContent">
+                                {% if hist.delivery_type == 'ordinary' %}
+                                Обычная доставка
+                                {% elif hist.delivery_type == 'express' %}
+                                Экспресс доставка
+                                {% else %}
+                                Неизвестный тип доставки
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="Order-info Order-info_pay">
+                            <div class="Order-infoType">Оплата:
+                            </div>
+                            <div class="Order-infoContent">
+                                {% if hist.payment_type == 'online' %}
+                                Оплата онлайн картой
+                                {% elif hist.payment_type == 'someone' %}
+                                За чужой счет
+                                {%else%}
+                                Неизвестный тип оплаты
+                                {%endif%}
+                            </div>
+                        </div>
+                        <div class="Order-info">
+                            <div class="Order-infoType">Общая стоимость:
+                            </div>
+                            <div class="Order-infoContent"><span class="Order-price">{{hist.total_cost}} руб.</span>
+                            </div>
+                        </div>
+                        <div class="Order-info Order-info_status">
+                            <div class="Order-infoType">Статус:
+                            </div>
+                            <div class="Order-infoContent">{{hist.status}}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        {%endfor%}
+
+    </div>
+</div>
+
+{%endblock%}

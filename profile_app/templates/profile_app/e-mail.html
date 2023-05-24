@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{%block content%}
+<div class="wrap">
+    <div class="wrapper">
+        <div class="header">
+            <h3 class="sign-in">Восстановление пароля (1/2)</h3>
+            <h5>Для восстановления пароля введите адрес электронной почты, на которую зарегистрирована учетная
+                запись</h5>
+        </div>
+
+        <form method="POST" action="{% url 'login-by-email' %}">
+            {% csrf_token %}
+            <input class="user-input" type="email" name="email" id="name" placeholder="E-mail"/>
+
+            {{ form.as_p }}
+
+            <div>
+                <input type="submit" value="Получить проверочный код"/>
+            </div>
+            <a class="registr" href="{% url 'register' %}">
+                Вход
+            </a>
+        </form>
+    </div>
+</div>
+
+{%endblock%}
+
+

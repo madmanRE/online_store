@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+{% if title %}
+{{ title }}
+{% else %}
+{{ category.title }}
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="Section-columnContent">
+    {% for tag in tags %}
+    <a class="btn btn_default btn_sm" href="{% url 'tag_page' tag_id=tag.id %}">{{ tag.tags_name }}</a>
+    {% endfor %}
+    {% if request.path|slice:"-8:-2" != "/tags/" and request.GET.tags != "all" %}
+    <br>
+    <a href="?tags=all"><span style="font-size:10; color: grey">Показать все</span></a>
+    {% endif %}
+    {% if request.GET.tags == "all" %}
+    <br>
+    <a href="?tags=hide"><span style="font-size:10; color: grey">Скрыть</span></a>
+    {% endif %}
+
+
+</div>
+<p>
+
+</p>
+<div class="Section-content">
+    <div class="Sort">
+        <div class="Sort-title">Сортировать по:
+        </div>
+        <div class="Sort-variants"><a class="Sort-sortBy Sort-sortBy_dec" href="?sort_by=reviews">Популярности</a><a
+                class="Sort-sortBy" href="?sort_by=price">Цене</a><a class="Sort-sortBy"
+                                                                     href="?sort_by=reviews_count">Отзывам</a><a
+                class="Sort-sortBy Sort-sortBy_inc" href="?sort_by=date">Новизне</a>
+        </div>
+    </div>
+
+    {% if request.path|slice:"-8:" == "catalog/" or request.path|slice:"-7:" == "filter/" %}
+    <div class="container1" style="display: inline-block; position: absolute; top: 25%; left: 3%;">
+        <aside class="sidebar">
+            <div class="widget">
+                <h4 class="widget-title">Фильтры</h4>
+                <p style="font-size:10px;">
+                    Фильтр тестовый, используется только на старнице
+                    <span style="color:red; font-size:12px;">Каталог</span>
+                </p>
+                <form action="{% url 'product_filter' %}" method="get" class="filter-form">
+                    {% csrf_token %}
+
+                    <div class="form-group" style="width:100px;"
+                         title="Выдает товары, где кол-во остатков на складе больше или равно указанному значению">
+                        <label for="filter-count">Остаток:</label>
+                        <input type="text" name="count" id="filter-count" placeholder="На остатке">
+                    </div>
+
+                    <div class="form-group" title="Показывает товары от 400.000 рублей">
+                        <label for="filter-expensive">Дорогой:</label>
+                        <input type="checkbox" name="expensive" id="filter-expensive" value="1">
+                        <label for="filter-expensive">Да</label>
+                    </div>
+
+                    <div class="form-group" title="Показывает товары ограниченой коллекции">
+                        <label for="filter-limited_edition">Limited Edition:</label>
+                        <input type="checkbox" name="limited_edition" id="filter-limited_edition" value="1">
+                        <label for="filter-limited_edition">Да</label>
+                    </div>
+
+                    <div class="form-group" style="width:100px;" title="Фильтр по цене">
+                        <label for="filter-price">Цена:</label>
+                        <input type="text" name="min_price" id="filter-min-price" placeholder="Минимальная цена">
+                        <input type="text" name="max_price" id="filter-max-price" placeholder="Максимальная цена">
+                    </div>
+
+                    <div class="form-group" title="Позволяет фильтровать по тегу">
+                        <label for="filter-tag">Тег:</label>
+                        <select name="tag" id="filter-tag">
+                            <option value="">Выберите Тег</option>
+                            {% for tag in tags %}
+                            <option value="{{ tag.pk }}">{{ tag.tags_name }}</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                            style="background-color:blue; color:white; margin-top:4px;">Применить
+                    </button>
+                </form>
+            </div>
+        </aside>
+    </div>
+    {%endif%}
+
+    <div class="container1" style="display: inline-block; width:60%; margin-left:25%">
+        <div class="Cards">
+
+            {%for prod in products%}
+            <div class="Card"><a class="Card-picture" href="{% url 'product' product_slug=prod.slug %}"><img
+                    src="{{prod.product_picture.url}}" alt="{{prod.title}}"/></a>
+                <div class="Card-content">
+                    <strong class="Card-title"><a href="{% url 'product' product_slug=prod.slug %}">{{prod.title}}</a>
+                    </strong>
+                    <div class="Card-description">
+                        <div class="Card-cost"><span class="Card-price">{{prod.price}} руб.</span>
+                        </div>
+                        <div class="Card-category">{{prod.category}}
+                        </div>
+                        {%if user%}
+                        <div class="Card-hover"><a class="Card-btn"
+                                                   href="{% url 'add-to-cart' product_id=prod.id %}"><img
+                                src="{% static 'assets/img/icons/card/cart.svg' %}"
+                                alt="cart.svg"/></a>
+                        </div>
+                        {%else%}
+                        <div class="Card-hover"><a class="Card-btn" href="#"><img
+                                src="{% static 'assets/img/icons/card/cart.svg' %}"
+                                alt="cart.svg"/></a>
+                        </div>
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
+            {%endfor%}
+
+        </div>
+
+        {% if page_obj.paginator.num_pages > 1 %}
+
+        <div class="Pagination">
+            <div class="Pagination-ins">
+                {% if page_obj.has_previous %}
+                <a class="Pagination-element Pagination-element_prev"
+                   href="?page={{ page_obj.previous_page_number }}"><img
+                        src="{% static 'assets/img/icons/prevPagination.svg' %}" alt="prevPagination.svg"/></a>
+                {% else %}
+                <a class="Pagination-element Pagination-element_prev Pagination-element_disabled"><img
+                        src="{% static 'assets/img/icons/prevPagination.svg' %}" alt="prevPagination.svg"/></a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <a class="Pagination-element Pagination-element_current" href="?page={{ num }}"><span
+                        class="Pagination-text">{{ num }}</span></a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a class="Pagination-element" href="?page={{ num }}"><span class="Pagination-text">{{ num }}</span></a>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <a class="Pagination-element Pagination-element_prev" href="?page={{ page_obj.next_page_number }}"><img
+                        src="{% static 'assets/img/icons/nextPagination.svg' %}" alt="nextPagination.svg"/></a>
+                {% else %}
+                <a class="Pagination-element Pagination-element_prev Pagination-element_disabled"><img
+                        src="{% static 'assets/img/icons/nextPagination.svg' %}" alt="nextPagination.svg"/></a>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <br>
+        {% endif %}
+
+    </div>
+    {% endblock %}

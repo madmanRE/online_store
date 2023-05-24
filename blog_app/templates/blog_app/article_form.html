@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% if request.path|slice:"-15:" == 'create_article/' %}
+Создание статьи
+{%else%}
+Обновление статьи
+{%endif%}
+{% endblock %}
+
+
+{% block content %}
+<h2>
+    {% if request.path|slice:"-15:" == 'create_article/' %}
+    Создание статьи
+    {%else%}
+    Обновление статьи
+    {%endif%}
+</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if request.path|slice:"-15:" == 'create_article/' %}
+    <button type="submit">Создать статью</button>
+    {% else %}
+    <button type="submit">Обновить статью</button>
+    {% endif %}
+</form>
+{% endblock %}

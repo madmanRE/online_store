@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{% if title %}
+{{title}}
+{%else%}
+Блог
+{%endif%}
+{% endblock %}
+
+{% block content %}
+<h1>
+    {% if title %}
+    {{title}}
+    {%else%}
+    Блог
+    {%endif%}
+</h1>
+<div class="Section-columnContent">
+
+    {% for theme in themes %}
+    <a class="btn btn_default btn_sm"
+       style="background-color:DarkCyan; color: white; box-shadow: 10px 5px 5px LightSeaGreen; hover:"
+       href="{% url 'blog_app:theme' slug=theme.slug %}">{{ theme.title }}</a>
+    {% endfor %}
+
+</div>
+<br>
+
+<br>
+<div style="display:inline-block;">
+    <ul>
+        {% for article in articles %}
+        <li>
+            <div>
+
+                <h3><a href="{% url 'blog_app:article' slug=article.slug %}">{{ article.title }}</a></h3>
+                {% if article.image %}
+                <a href="{% url 'blog_app:article' slug=article.slug %}">
+                <img src="{{article.image.url}}" width="250px;"
+                     style="border-radius: 10px; box-shadow: 5px 2px 8px LightSeaGreen; hover:">
+                </a>
+                {%else%}
+                <a href="{% url 'blog_app:article' slug=article.slug %}">
+                <img src="https://uprav.ru/upload/iblock/55b/55b9f1981bed718ca82445da3a4af634.jpg"
+                     width="250px; border-radius:10px">
+                </a>
+                {%endif%}
+            </div>
+        </li>
+        <br>
+        {% empty %}
+        <li>No articles yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% if request.user.is_superuser or request.user.is_staff  %}
+<div>
+    <button style="background-color:RoyalBlue; border-radius:5px; margin-left:5px;"><a href="{% url 'blog_app:create_article'%}"><span style="color:white">Создать статью</span></a>
+    </button>
+</div>
+{% endif %}
+
+{% if page_obj.paginator.num_pages > 1 %}
+
+<div class="Pagination">
+    <div class="Pagination-ins">
+        {% if page_obj.has_previous %}
+        <a class="Pagination-element Pagination-element_prev"
+           href="?page={{ page_obj.previous_page_number }}"><img
+                src="{% static 'assets/img/icons/prevPagination.svg' %}" alt="prevPagination.svg"/></a>
+        {% else %}
+        <a class="Pagination-element Pagination-element_prev Pagination-element_disabled"><img
+                src="{% static 'assets/img/icons/prevPagination.svg' %}" alt="prevPagination.svg"/></a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <a class="Pagination-element Pagination-element_current" href="?page={{ num }}"><span
+                class="Pagination-text">{{ num }}</span></a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <a class="Pagination-element" href="?page={{ num }}"><span class="Pagination-text">{{ num }}</span></a>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a class="Pagination-element Pagination-element_prev" href="?page={{ page_obj.next_page_number }}"><img
+                src="{% static 'assets/img/icons/nextPagination.svg' %}" alt="nextPagination.svg"/></a>
+        {% else %}
+        <a class="Pagination-element Pagination-element_prev Pagination-element_disabled"><img
+                src="{% static 'assets/img/icons/nextPagination.svg' %}" alt="nextPagination.svg"/></a>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<br>
+{% endif %}
+{% endblock %}
